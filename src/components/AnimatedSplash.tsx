@@ -7,22 +7,12 @@ type Props = { onFinish: () => void };
 
 export default function AnimatedSplash({ onFinish }: Props) {
   const logoOpacity = useRef(new Animated.Value(0)).current;
-  const textOpacity = useRef(new Animated.Value(0)).current;
-  const textY = useRef(new Animated.Value(20)).current;
   const screenOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     Animated.sequence([
-      // Faded logo background fades in
       Animated.timing(logoOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-      // Text slides up
-      Animated.parallel([
-        Animated.timing(textOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-        Animated.timing(textY, { toValue: 0, duration: 400, useNativeDriver: true }),
-      ]),
-      // Hold
       Animated.delay(800),
-      // Fade out entire screen
       Animated.timing(screenOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
     ]).start(() => onFinish());
   }, []);
@@ -36,12 +26,6 @@ export default function AnimatedSplash({ onFinish }: Props) {
         resizeMode="contain"
       />
 
-      {/* Foreground text */}
-      <Animated.View style={[styles.foreground, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>
-        <Text style={styles.name}>IGNITE</Text>
-        <Text style={styles.sub}>GYM</Text>
-        <Text style={styles.tagline}>Train Harder. Ignite Further.</Text>
-      </Animated.View>
     </Animated.View>
   );
 }
