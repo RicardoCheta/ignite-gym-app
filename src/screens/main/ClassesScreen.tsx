@@ -20,7 +20,7 @@ const TYPE_LABELS: Record<string, string> = {
   pilates: '🤸 Pilates', boxing: '🥊 Boxing',
 };
 
-export default function ClassesScreen() {
+export default function ClassesScreen({ navigation }: any) {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,7 +91,7 @@ export default function ClassesScreen() {
           ) : sessions.map((s: any) => {
             const spots = s.capacity - s.enrolled_count;
             return (
-              <View key={s.session_id} style={styles.card}>
+              <TouchableOpacity key={s.session_id} style={styles.card} onPress={() => navigation.navigate('ClassDetail', { session: s })} activeOpacity={0.9}>
                 {CLASS_IMAGES[s.type] && (
                   <Image source={{ uri: CLASS_IMAGES[s.type] }} style={styles.cardImage} />
                 )}
@@ -131,7 +131,7 @@ export default function ClassesScreen() {
                   )
                 )}
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
           <View style={{ height: spacing.xl }} />

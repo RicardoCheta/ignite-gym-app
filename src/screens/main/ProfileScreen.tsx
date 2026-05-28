@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { getProfile } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import { colors, spacing, fontSize, radius } from '../../theme';
+import { useTheme } from '../../context/ThemeContext';
+import { spacing, fontSize, radius } from '../../theme';
 
 export default function ProfileScreen({ navigation }: any) {
   const { user, logout } = useAuth();
+  const { colors } = useTheme();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,6 +71,9 @@ export default function ProfileScreen({ navigation }: any) {
 
       {/* Logout */}
       <View style={styles.section}>
+        <TouchableOpacity style={[styles.logoutBtn, { marginBottom: spacing.sm, backgroundColor: colors.primary, borderColor: colors.primary }]} onPress={() => navigation.navigate('EditProfile')}>
+          <Text style={[styles.logoutText, { color: '#fff' }]}>Edit Profile</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
