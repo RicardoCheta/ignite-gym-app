@@ -3,6 +3,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, ActivityIndicator, View, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -23,15 +24,21 @@ import ReviewScreen from '../screens/main/ReviewScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const TAB_ICONS: Record<string, string> = {
-  Home: '🏠', Classes: '📅', Trainers: '🏋️', Equipment: '⚙️', Profile: '👤',
+type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
+
+const TAB_ICONS: Record<string, { active: IoniconsName; inactive: IoniconsName }> = {
+  Home:      { active: 'home',        inactive: 'home-outline' },
+  Classes:   { active: 'calendar',    inactive: 'calendar-outline' },
+  Trainers:  { active: 'barbell',     inactive: 'barbell-outline' },
+  Equipment: { active: 'fitness',     inactive: 'fitness-outline' },
+  Profile:   { active: 'person',      inactive: 'person-outline' },
 };
 
 function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, colors: themeColors } = useTheme();
   return (
     <TouchableOpacity onPress={toggleTheme} style={{ marginRight: 12 }}>
-      <Text style={{ fontSize: 20 }}>{theme === 'dark' ? '☀️' : '🌙'}</Text>
+      <Ionicons name={theme === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color={themeColors.primary} />
     </TouchableOpacity>
   );
 }
@@ -41,7 +48,13 @@ function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: () => <Text style={{ fontSize: 20 }}>{TAB_ICONS[route.name]}</Text>,
+        tabBarIcon: ({ focused }) => (
+          <Ionicons
+            name={focused ? TAB_ICONS[route.name].active : TAB_ICONS[route.name].inactive}
+            size={24}
+            color={focused ? colors.primary : colors.textMuted}
+          />
+        ),
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border },
