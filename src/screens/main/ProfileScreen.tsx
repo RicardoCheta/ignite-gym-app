@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator
 import { getProfile } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { spacing, fontSize, radius } from '../../theme';
+import { colors, spacing, fontSize, radius } from '../../theme';
 
 export default function ProfileScreen({ navigation }: any) {
   const { user, logout } = useAuth();
