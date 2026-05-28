@@ -18,14 +18,14 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Hero */}
-      <View style={styles.hero}>
+      <ImageBackground source={{ uri: `${API_BASE}/images/gym.jpg` }} style={styles.hero} imageStyle={{ opacity: 0.35 }}>
         <Text style={styles.heroEyebrow}>Welcome to Ignite</Text>
         <Text style={styles.heroTitle}>Transform Your Body,{'\n'}Transform Your Life</Text>
         <Text style={styles.heroSub}>World-class trainers, modern facilities, and classes for every level.</Text>
         <TouchableOpacity style={styles.heroBtn} onPress={() => navigation.navigate('Classes')}>
           <Text style={styles.heroBtnText}>Explore Classes</Text>
         </TouchableOpacity>
-      </View>
+      </ImageBackground>
 
       {/* Stats strip */}
       <View style={styles.statsStrip}>
