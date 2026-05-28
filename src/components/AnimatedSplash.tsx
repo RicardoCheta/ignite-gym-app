@@ -49,7 +49,7 @@ export default function AnimatedSplash({ onFinish }: Props) {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute', width, height, zIndex: 999,
-    backgroundColor: '#111111', alignItems: 'center', justifyContent: 'center',
+    backgroundColor: '#000000', alignItems: 'center', justifyContent: 'center',
   },
   bgLogo: {
     position: 'absolute',
