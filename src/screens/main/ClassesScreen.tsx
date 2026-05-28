@@ -3,11 +3,10 @@ import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, ActivityIndicator, RefreshControl, Image,
 } from 'react-native';
-import { getClasses, enrollClass, cancelEnrollment } from '../../services/api';
+import { getClasses, enrollClass, cancelEnrollment, API_BASE } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, fontSize, radius } from '../../theme';
 
-const API_BASE = 'http://10.0.2.2:3000';
 const CLASS_IMAGES: Record<string, string> = {
   hiit: `${API_BASE}/images/hiit.jpg`,
   yoga: `${API_BASE}/images/yoga.jpg`,

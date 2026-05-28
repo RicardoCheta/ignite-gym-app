@@ -2,8 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, fontSize, radius } from '../../theme';
-
-const API_BASE = 'http://10.0.2.2:3000';
+import { API_BASE } from '../../services/api';
 
 const CLASS_TYPES = [
   { type: 'hiit',     label: 'HIIT',     emoji: '⚡', image: `${API_BASE}/images/hiit.jpg` },

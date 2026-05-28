@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, RefreshControl } from 'react-native';
-import { getTrainers } from '../../services/api';
+import { getTrainers, API_BASE } from '../../services/api';
 import { colors, spacing, fontSize, radius } from '../../theme';
 
 export default function TrainersScreen({ navigation }: any) {
@@ -35,7 +35,7 @@ export default function TrainersScreen({ navigation }: any) {
         <TouchableOpacity key={t.trainer_id} style={styles.card} onPress={() => navigation.navigate('TrainerProfile', { id: t.trainer_id })}>
           <View style={styles.avatar}>
             {t.profile_photo ? (
-              <Image source={{ uri: `http://localhost:3000${t.profile_photo}` }} style={styles.avatarImg} />
+              <Image source={{ uri: `${API_BASE}${t.profile_photo}` }} style={styles.avatarImg} />
             ) : (
               <Text style={styles.avatarInitial}>{t.name[0].toUpperCase()}</Text>
             )}
