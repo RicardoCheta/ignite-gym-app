@@ -1,44 +1,45 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, StyleSheet, Dimensions, Image } from 'react-native';
+import { Text, Animated, StyleSheet, Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 type Props = { onFinish: () => void };
 
 export default function AnimatedSplash({ onFinish }: Props) {
-  const flameScale = useRef(new Animated.Value(0)).current;
-  const flameOpacity = useRef(new Animated.Value(0)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
   const textOpacity = useRef(new Animated.Value(0)).current;
   const textY = useRef(new Animated.Value(20)).current;
   const screenOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     Animated.sequence([
-      // Logo appears and grows
-      Animated.parallel([
-        Animated.spring(flameScale, { toValue: 1, tension: 60, friction: 6, useNativeDriver: true }),
-        Animated.timing(flameOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-      ]),
-      // Tagline slides up
+      // Faded logo background fades in
+      Animated.timing(logoOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
+      // Text slides up
       Animated.parallel([
         Animated.timing(textOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
         Animated.timing(textY, { toValue: 0, duration: 400, useNativeDriver: true }),
       ]),
       // Hold
-      Animated.delay(700),
-      // Fade out
-      Animated.timing(screenOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
+      Animated.delay(800),
+      // Fade out entire screen
+      Animated.timing(screenOpacity, { toValue: 0, duration: 500, useNativeDriver: true }),
     ]).start(() => onFinish());
   }, []);
 
   return (
     <Animated.View style={[styles.container, { opacity: screenOpacity }]}>
+      {/* Full-screen faded logo background */}
       <Animated.Image
         source={require('../../assets/logo.png')}
-        style={[styles.logo, { opacity: flameOpacity, transform: [{ scale: flameScale }] }]}
-        resizeMode="contain"
+        style={[styles.bgLogo, { opacity: logoOpacity }]}
+        resizeMode="cover"
       />
-      <Animated.View style={{ opacity: textOpacity, transform: [{ translateY: textY }] }}>
+
+      {/* Foreground text */}
+      <Animated.View style={[styles.foreground, { opacity: textOpacity, transform: [{ translateY: textY }] }]}>
+        <Text style={styles.name}>IGNITE</Text>
+        <Text style={styles.sub}>GYM</Text>
         <Text style={styles.tagline}>Train Harder. Ignite Further.</Text>
       </Animated.View>
     </Animated.View>
@@ -50,6 +51,16 @@ const styles = StyleSheet.create({
     position: 'absolute', width, height, zIndex: 999,
     backgroundColor: '#111111', alignItems: 'center', justifyContent: 'center',
   },
-  logo: { width: 260, height: 260 },
-  tagline: { fontSize: 14, fontWeight: '600', color: '#aaaaaa', letterSpacing: 2, textAlign: 'center' },
+  bgLogo: {
+    position: 'absolute',
+    width: width,
+    height: height,
+    opacity: 0.12,
+  },
+  foreground: {
+    alignItems: 'center',
+  },
+  name: { fontSize: 52, fontWeight: '900', color: '#ff4d4d', letterSpacing: 8 },
+  sub: { fontSize: 16, fontWeight: '700', color: '#aaaaaa', letterSpacing: 12, marginTop: -6 },
+  tagline: { fontSize: 13, fontWeight: '500', color: '#666666', letterSpacing: 2, marginTop: 16 },
 });
