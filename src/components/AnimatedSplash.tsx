@@ -33,7 +33,7 @@ export default function AnimatedSplash({ onFinish }: Props) {
       <Animated.Image
         source={require('../../assets/logo.png')}
         style={[styles.bgLogo, { opacity: logoOpacity }]}
-        resizeMode="cover"
+        resizeMode="contain"
       />
 
       {/* Foreground text */}
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   bgLogo: {
     position: 'absolute',
     width: width,
-    height: height,
+    height: width,
     opacity: 0.12,
   },
   foreground: {
