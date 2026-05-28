@@ -3,12 +3,14 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ImageBackground }
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, fontSize, radius } from '../../theme';
 
+const API_BASE = 'http://10.0.2.2:3000';
+
 const CLASS_TYPES = [
-  { type: 'hiit', label: 'HIIT', emoji: '⚡' },
-  { type: 'yoga', label: 'Yoga', emoji: '🧘' },
-  { type: 'spinning', label: 'Spinning', emoji: '🚴' },
-  { type: 'pilates', label: 'Pilates', emoji: '🤸' },
-  { type: 'boxing', label: 'Boxing', emoji: '🥊' },
+  { type: 'hiit',     label: 'HIIT',     emoji: '⚡', image: `${API_BASE}/images/hiit.jpg` },
+  { type: 'yoga',     label: 'Yoga',     emoji: '🧘', image: `${API_BASE}/images/yoga.jpg` },
+  { type: 'spinning', label: 'Spinning', emoji: '🚴', image: `${API_BASE}/images/spinning.jpg` },
+  { type: 'pilates',  label: 'Pilates',  emoji: '🤸', image: `${API_BASE}/images/pilates.jpg` },
+  { type: 'boxing',   label: 'Boxing',   emoji: '🥊', image: `${API_BASE}/images/boxing.jpg` },
 ];
 
 export default function HomeScreen({ navigation }: any) {
@@ -51,8 +53,12 @@ export default function HomeScreen({ navigation }: any) {
               style={styles.classChip}
               onPress={() => navigation.navigate('Classes', { type: c.type })}
             >
-              <Text style={styles.classEmoji}>{c.emoji}</Text>
-              <Text style={styles.classLabel}>{c.label}</Text>
+              <ImageBackground source={{ uri: c.image }} style={styles.classChipImage} imageStyle={{ borderRadius: radius.md }}>
+                <View style={styles.classChipOverlay}>
+                  <Text style={styles.classEmoji}>{c.emoji}</Text>
+                  <Text style={styles.classLabel}>{c.label}</Text>
+                </View>
+              </ImageBackground>
             </TouchableOpacity>
           ))}
         </View>
@@ -95,8 +101,10 @@ const styles = StyleSheet.create({
   section: { padding: spacing.lg },
   sectionTitle: { color: colors.text, fontSize: fontSize.lg, fontWeight: '800', marginBottom: spacing.md },
   classGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  classChip: { backgroundColor: colors.card, borderRadius: radius.md, padding: spacing.md, alignItems: 'center', width: '30%', flexGrow: 1, borderWidth: 1, borderColor: colors.border },
-  classEmoji: { fontSize: 28, marginBottom: spacing.xs },
+  classChip: { borderRadius: radius.md, overflow: 'hidden', width: '30%', flexGrow: 1, height: 90 },
+  classChipImage: { width: '100%', height: '100%' },
+  classChipOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', borderRadius: radius.md },
+  classEmoji: { fontSize: 24, marginBottom: 2 },
   classLabel: { color: colors.text, fontWeight: '700', fontSize: fontSize.sm },
   quickLinks: { flexDirection: 'row', gap: spacing.sm },
   quickCard: { flex: 1, backgroundColor: colors.card, borderRadius: radius.md, padding: spacing.md, alignItems: 'center', borderWidth: 1, borderColor: colors.border },

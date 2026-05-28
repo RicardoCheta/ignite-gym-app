@@ -91,9 +91,9 @@ if (userCount === 0) {
 
   db.prepare(`INSERT INTO users (username, email, password_hash, name, role) VALUES (?,?,?,?,?)`).run('admin', 'admin@ignite.gym', hash('admin123'), 'Alberto Admin', 'admin');
   db.prepare(`INSERT INTO users (username, email, password_hash, name, role) VALUES (?,?,?,?,?)`).run('member', 'member@ignite.gym', hash('member123'), 'Maria Member', 'member');
-  db.prepare(`INSERT INTO users (username, email, password_hash, name, role) VALUES (?,?,?,?,?)`).run('tiago', 'tiago@ignite.gym', hash('trainer123'), 'Tiago Trainer', 'trainer');
-  db.prepare(`INSERT INTO users (username, email, password_hash, name, role) VALUES (?,?,?,?,?)`).run('sofia', 'sofia@ignite.gym', hash('trainer123'), 'Sofia Santos', 'trainer');
-  db.prepare(`INSERT INTO users (username, email, password_hash, name, role) VALUES (?,?,?,?,?)`).run('miguel', 'miguel@ignite.gym', hash('trainer123'), 'Miguel Ferreira', 'trainer');
+  db.prepare(`INSERT INTO users (username, email, password_hash, name, role, profile_photo) VALUES (?,?,?,?,?,?)`).run('tiago', 'tiago@ignite.gym', hash('trainer123'), 'Tiago Trainer', 'trainer', '/images/trainer_tiago.jpg');
+  db.prepare(`INSERT INTO users (username, email, password_hash, name, role, profile_photo) VALUES (?,?,?,?,?,?)`).run('sofia', 'sofia@ignite.gym', hash('trainer123'), 'Sofia Santos', 'trainer', '/images/trainer_sofia.jpg');
+  db.prepare(`INSERT INTO users (username, email, password_hash, name, role, profile_photo) VALUES (?,?,?,?,?,?)`).run('miguel', 'miguel@ignite.gym', hash('trainer123'), 'Miguel Ferreira', 'trainer', '/images/trainer_miguel.jpg');
 
   const tiagoDd = db.prepare(`SELECT user_id FROM users WHERE username='tiago'`).get().user_id;
   const sofiaId = db.prepare(`SELECT user_id FROM users WHERE username='sofia'`).get().user_id;

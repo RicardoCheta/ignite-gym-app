@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, RefreshControl,
+  StyleSheet, ActivityIndicator, RefreshControl, Image,
 } from 'react-native';
 import { getClasses, enrollClass, cancelEnrollment } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, fontSize, radius } from '../../theme';
+
+const API_BASE = 'http://10.0.2.2:3000';
+const CLASS_IMAGES: Record<string, string> = {
+  hiit: `${API_BASE}/images/hiit.jpg`,
+  yoga: `${API_BASE}/images/yoga.jpg`,
+  spinning: `${API_BASE}/images/spinning.jpg`,
+  pilates: `${API_BASE}/images/pilates.jpg`,
+  boxing: `${API_BASE}/images/boxing.jpg`,
+};
 
 const TYPE_LABELS: Record<string, string> = {
   hiit: '⚡ HIIT', yoga: '🧘 Yoga', spinning: '🚴 Spinning',
@@ -84,6 +93,10 @@ export default function ClassesScreen() {
             const spots = s.capacity - s.enrolled_count;
             return (
               <View key={s.session_id} style={styles.card}>
+                {CLASS_IMAGES[s.type] && (
+                  <Image source={{ uri: CLASS_IMAGES[s.type] }} style={styles.cardImage} />
+                )}
+                <View style={styles.cardBody}>
                 <View style={styles.cardHeader}>
                   <View style={styles.typeBadge}>
                     <Text style={styles.typeBadgeText}>{TYPE_LABELS[s.type] || s.type}</Text>
@@ -118,6 +131,7 @@ export default function ClassesScreen() {
                     <View style={styles.fullTag}><Text style={styles.fullTagText}>Class Full</Text></View>
                   )
                 )}
+                </View>
               </View>
             );
           })}
@@ -138,7 +152,9 @@ const styles = StyleSheet.create({
   chipTextActive: { color: '#fff' },
   message: { backgroundColor: '#112a11', color: '#4caf50', padding: spacing.sm, margin: spacing.md, borderRadius: radius.sm, fontSize: fontSize.sm },
   empty: { color: colors.textMuted, textAlign: 'center', marginTop: 60, fontSize: fontSize.md },
-  card: { backgroundColor: colors.card, margin: spacing.md, marginBottom: 0, borderRadius: radius.lg, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
+  card: { backgroundColor: colors.card, margin: spacing.md, marginBottom: 0, borderRadius: radius.lg, overflow: 'hidden', borderWidth: 1, borderColor: colors.border },
+  cardImage: { width: '100%', height: 160, resizeMode: 'cover' },
+  cardBody: { padding: spacing.md },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.sm },
   typeBadge: { backgroundColor: '#2a1111', borderRadius: radius.full, paddingHorizontal: spacing.sm, paddingVertical: 3 },
   typeBadgeText: { color: colors.primary, fontSize: fontSize.xs, fontWeight: '700' },
