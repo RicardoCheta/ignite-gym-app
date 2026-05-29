@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../context/ThemeContext';
@@ -38,6 +39,7 @@ const GOALS = [
 
 export default function GoalsScreen({ navigation }: any) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleContinue = async () => {
@@ -47,7 +49,7 @@ export default function GoalsScreen({ navigation }: any) {
   };
 
   return (
-    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={styles.content}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing.xl }]}>
       <Text style={[styles.title, { color: colors.text }]}>What's your goal?</Text>
       <Text style={[styles.sub, { color: colors.textMuted }]}>We'll suggest the best classes for you</Text>
 
@@ -92,7 +94,7 @@ export default function GoalsScreen({ navigation }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: spacing.lg, paddingTop: spacing.xl },
+  content: { padding: spacing.lg, paddingBottom: spacing.xl },
   title: { fontSize: fontSize.xxl, fontWeight: '900', marginBottom: spacing.xs },
   sub: { fontSize: fontSize.md, marginBottom: spacing.xl },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md, marginBottom: spacing.xl },
