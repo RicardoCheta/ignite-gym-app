@@ -48,8 +48,8 @@ export default function RegisterScreen({ navigation }: any) {
           { key: 'name', label: 'Full Name', placeholder: 'Maria Santos' },
           { key: 'username', label: 'Username', placeholder: 'maria_s', auto: 'none' as const },
           { key: 'email', label: 'Email', placeholder: 'maria@email.com', keyboard: 'email-address' as const },
-          { key: 'password', label: 'Password', placeholder: 'Min. 6 characters', secure: true },
-          { key: 'confirm', label: 'Confirm Password', placeholder: 'Repeat password', secure: true },
+          { key: 'password', label: 'Password', placeholder: 'Min. 6 characters', secure: true, content: 'none' as const },
+          { key: 'confirm', label: 'Confirm Password', placeholder: 'Repeat password', secure: true, content: 'none' as const },
         ].map(f => (
           <View key={f.key} style={styles.field}>
             <Text style={styles.label}>{f.label}</Text>
@@ -62,6 +62,8 @@ export default function RegisterScreen({ navigation }: any) {
               secureTextEntry={f.secure}
               autoCapitalize={f.auto ?? (f.key === 'name' ? 'words' : 'none')}
               keyboardType={f.keyboard ?? 'default'}
+              textContentType={(f as any).content ?? 'none'}
+              autoComplete="off"
             />
           </View>
         ))}
