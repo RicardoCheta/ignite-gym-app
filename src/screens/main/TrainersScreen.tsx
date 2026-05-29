@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, Image, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, RefreshControl } from 'react-native';
 import { getTrainers, API_BASE } from '../../services/api';
 import { colors, spacing, fontSize, radius } from '../../theme';
+import { TrainerCardSkeleton } from '../../components/SkeletonLoader';
 
 export default function TrainersScreen({ navigation }: any) {
   const [trainers, setTrainers] = useState<any[]>([]);
@@ -20,8 +21,6 @@ export default function TrainersScreen({ navigation }: any) {
 
   useEffect(() => { load(); }, []);
 
-  if (loading) return <ActivityIndicator color={colors.primary} style={{ flex: 1, backgroundColor: colors.background }} />;
-
   return (
     <ScrollView
       style={styles.container}
@@ -31,7 +30,9 @@ export default function TrainersScreen({ navigation }: any) {
       <Text style={styles.header}>Our Trainers</Text>
       <Text style={styles.sub}>Meet our certified fitness professionals</Text>
 
-      {trainers.map((t: any) => (
+      {loading ? (
+        [1, 2, 3].map(i => <TrainerCardSkeleton key={i} />)
+      ) : trainers.map((t: any) => (
         <TouchableOpacity key={t.trainer_id} style={styles.card} onPress={() => navigation.navigate('TrainerProfile', { id: t.trainer_id })}>
           <View style={styles.avatar}>
             {t.profile_photo ? (

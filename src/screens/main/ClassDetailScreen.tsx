@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { spacing, fontSize, radius } from '../../theme';
 import { scheduleClassNotification } from '../../services/notifications';
+import BookingConfirmation from '../../components/BookingConfirmation';
 
 const CLASS_IMAGES: Record<string, string> = {
   hiit: `${API_BASE}/images/hiit.jpg`,
@@ -21,6 +22,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   const [enrolled, setEnrolled] = useState(!!session.user_enrolled);
   const [spots, setSpots] = useState(session.capacity - session.enrolled_count);
   const [loading, setLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleEnroll = async () => {
     setLoading(true);
@@ -29,7 +31,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
       await scheduleClassNotification(session);
       setEnrolled(true);
       setSpots(s => s - 1);
-      Alert.alert('Enrolled!', "You'll get a reminder 1 hour before the class.");
+      setShowConfirmation(true);
     } catch (e: any) {
       Alert.alert('Error', e.response?.data?.message || 'Could not enroll.');
     } finally { setLoading(false); }
@@ -45,6 +47,10 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   };
 
   return (
+    <>
+    {showConfirmation && (
+      <BookingConfirmation session={session} onDismiss={() => setShowConfirmation(false)} />
+    )}
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       <Image source={{ uri: CLASS_IMAGES[session.type] }} style={styles.image} />
 
@@ -96,6 +102,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
         )}
       </View>
     </ScrollView>
+    </>
   );
 }
 

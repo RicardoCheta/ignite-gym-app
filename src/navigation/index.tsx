@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, ActivityIndicator, View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -11,12 +12,14 @@ import { fontSize } from '../theme';
 
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
+import GoalsScreen from '../screens/auth/GoalsScreen';
 import HomeScreen from '../screens/main/HomeScreen';
 import ClassesScreen from '../screens/main/ClassesScreen';
 import ClassDetailScreen from '../screens/main/ClassDetailScreen';
 import TrainersScreen from '../screens/main/TrainersScreen';
 import TrainerProfileScreen from '../screens/main/TrainerProfileScreen';
 import EquipmentScreen from '../screens/main/EquipmentScreen';
+import EquipmentMapScreen from '../screens/main/EquipmentMapScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
 import EditProfileScreen from '../screens/main/EditProfileScreen';
 import ReviewScreen from '../screens/main/ReviewScreen';
@@ -77,8 +80,19 @@ function MainTabs() {
 export default function AppNavigator() {
   const { user, loading } = useAuth();
   const { colors, theme } = useTheme();
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
-  if (loading) {
+  useEffect(() => {
+    if (user) {
+      AsyncStorage.getItem('fitness_goal').then(goal => {
+        setInitialRoute(goal ? 'Main' : 'Goals');
+      });
+    } else {
+      setInitialRoute(null);
+    }
+  }, [user]);
+
+  if (loading || (user && !initialRoute)) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
         <ActivityIndicator color={colors.primary} size="large" />
@@ -92,14 +106,19 @@ export default function AppNavigator() {
 
   return (
     <NavigationContainer theme={navTheme}>
-      <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: colors.card }, headerTintColor: colors.text, headerTitleStyle: { fontWeight: '800' } }}>
+      <Stack.Navigator
+        initialRouteName={initialRoute ?? 'Main'}
+        screenOptions={{ headerStyle: { backgroundColor: colors.card }, headerTintColor: colors.text, headerTitleStyle: { fontWeight: '800' } }}
+      >
         {user ? (
           <>
+            <Stack.Screen name="Goals" component={GoalsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
             <Stack.Screen name="ClassDetail" component={ClassDetailScreen} options={{ title: 'Class Details' }} />
             <Stack.Screen name="TrainerProfile" component={TrainerProfileScreen} options={{ title: 'Trainer Profile' }} />
             <Stack.Screen name="Review" component={ReviewScreen} options={{ title: 'Leave a Review' }} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Edit Profile' }} />
+            <Stack.Screen name="EquipmentMap" component={EquipmentMapScreen} options={{ title: 'Equipment Map' }} />
           </>
         ) : (
           <>

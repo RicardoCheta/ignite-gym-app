@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, RefreshControl, Image,
+  StyleSheet, RefreshControl, Image,
 } from 'react-native';
 import { getClasses, enrollClass, cancelEnrollment, API_BASE } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, fontSize, radius } from '../../theme';
+import { ClassCardSkeleton } from '../../components/SkeletonLoader';
 
 const CLASS_IMAGES: Record<string, string> = {
   hiit: `${API_BASE}/images/hiit.jpg`,
@@ -80,7 +81,9 @@ export default function ClassesScreen({ navigation }: any) {
       {message ? <Text style={styles.message}>{message}</Text> : null}
 
       {loading ? (
-        <ActivityIndicator color={colors.primary} style={{ marginTop: 40 }} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {[1, 2, 3].map(i => <ClassCardSkeleton key={i} />)}
+        </ScrollView>
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}

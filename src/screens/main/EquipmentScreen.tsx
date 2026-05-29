@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { getEquipment } from '../../services/api';
 import { colors, spacing, fontSize, radius } from '../../theme';
+import { SkeletonBox } from '../../components/SkeletonLoader';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   available:   { label: 'Available',    color: '#4caf50', bg: '#112a11' },
@@ -13,7 +15,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   cardio: '🏃', strength: '🏋️', flexibility: '🤸',
 };
 
-export default function EquipmentScreen() {
+export default function EquipmentScreen({ navigation }: any) {
   const [equipment, setEquipment] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,18 +44,28 @@ export default function EquipmentScreen() {
     return acc;
   }, {});
 
-  if (loading) return <ActivityIndicator color={colors.primary} style={{ flex: 1, backgroundColor: colors.background }} />;
-
   return (
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={colors.primary} />}
     >
-      <Text style={styles.header}>Equipment</Text>
-      {lastUpdated ? <Text style={styles.updated}>Last updated at {lastUpdated} · auto-refreshes every 30s</Text> : null}
+      <View style={styles.headerRow}>
+        <View>
+          <Text style={styles.header}>Equipment</Text>
+          {lastUpdated ? <Text style={styles.updated}>Updated {lastUpdated} · auto-refreshes every 30s</Text> : null}
+        </View>
+        <TouchableOpacity style={styles.mapBtn} onPress={() => navigation.navigate('EquipmentMap')}>
+          <Ionicons name="map-outline" size={18} color={colors.primary} />
+          <Text style={styles.mapBtnText}>Map</Text>
+        </TouchableOpacity>
+      </View>
 
-      {Object.entries(grouped).map(([category, items]) => (
+      {loading ? (
+        <View style={{ paddingHorizontal: spacing.md, gap: spacing.sm }}>
+          {[1, 2, 3, 4, 5].map(i => <SkeletonBox key={i} height={60} style={{ borderRadius: 12 }} />)}
+        </View>
+      ) : Object.entries(grouped).map(([category, items]) => (
         <View key={category} style={styles.section}>
           <Text style={styles.category}>
             {CATEGORY_ICONS[category] || '🏠'} {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -81,8 +93,11 @@ export default function EquipmentScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: { color: colors.text, fontSize: fontSize.xxl, fontWeight: '900', padding: spacing.lg, paddingBottom: 4 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: spacing.lg },
+  header: { color: colors.text, fontSize: fontSize.xxl, fontWeight: '900', padding: spacing.lg, paddingBottom: 2 },
   updated: { color: colors.textMuted, fontSize: fontSize.xs, paddingHorizontal: spacing.lg, marginBottom: spacing.md },
+  mapBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#2a1111', borderRadius: radius.full, paddingHorizontal: spacing.sm + 2, paddingVertical: 6 },
+  mapBtnText: { color: colors.primary, fontSize: fontSize.xs, fontWeight: '700' },
   section: { paddingHorizontal: spacing.md, marginBottom: spacing.md },
   category: { color: colors.text, fontSize: fontSize.lg, fontWeight: '800', marginBottom: spacing.sm },
   card: { backgroundColor: colors.card, borderRadius: radius.md, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
