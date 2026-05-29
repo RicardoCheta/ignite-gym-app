@@ -107,7 +107,7 @@ export default function AppNavigator() {
   return (
     <NavigationContainer theme={navTheme}>
       <Stack.Navigator
-        initialRouteName={initialRoute ?? 'Main'}
+        initialRouteName={user ? (initialRoute ?? 'Main') : 'Login'}
         screenOptions={{ headerStyle: { backgroundColor: colors.card }, headerTintColor: colors.text, headerTitleStyle: { fontWeight: '800' } }}
       >
         {user ? (
