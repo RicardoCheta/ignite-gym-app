@@ -34,6 +34,8 @@ export const enrollClass = (sessionId: number) =>
 export const cancelEnrollment = (sessionId: number) =>
   api.post('/classes/cancel', { session_id: sessionId });
 
+export const getMyEnrollments = () => api.get('/classes/my-enrollments');
+
 // Trainers
 export const getTrainers = () => api.get('/trainers');
 export const getTrainer = (id: number) => api.get(`/trainers/${id}`);

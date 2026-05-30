@@ -30,6 +30,23 @@ router.get('/', (req, res) => {
   res.json(db.prepare(query).all(...params));
 });
 
+router.get('/my-enrollments', auth, (req, res) => {
+  const enrollments = db.prepare(`
+    SELECT cs.session_id, cs.session_date, cs.start_time, cs.end_time,
+           cc.title, cc.type, cc.duration_minutes, cc.room,
+           u.name AS trainer_name
+    FROM enrollments e
+    JOIN class_sessions cs ON e.session_id = cs.session_id
+    JOIN class_catalog cc ON cs.class_id = cc.class_id
+    JOIN trainers t ON cs.trainer_id = t.trainer_id
+    JOIN users u ON t.user_id = u.user_id
+    WHERE e.user_id = ? AND e.status = 'enrolled'
+      AND cs.status = 'scheduled' AND cs.session_date >= DATE('now')
+    ORDER BY cs.session_date, cs.start_time
+  `).all(req.user.user_id);
+  res.json(enrollments);
+});
+
 router.post('/enroll', auth, (req, res) => {
   if (req.user.role !== 'member') return res.status(403).json({ message: 'Only members can enroll.' });
   const { session_id } = req.body;
