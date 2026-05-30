@@ -7,6 +7,8 @@ import { getClasses, enrollClass, cancelEnrollment, API_BASE } from '../../servi
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, fontSize, radius } from '../../theme';
 import { ClassCardSkeleton } from '../../components/SkeletonLoader';
+import BookingConfirmation from '../../components/BookingConfirmation';
+import { scheduleClassNotification } from '../../services/notifications';
 
 const CLASS_IMAGES: Record<string, string> = {
   hiit: `${API_BASE}/images/hiit.jpg`,
@@ -28,6 +30,7 @@ export default function ClassesScreen({ navigation }: any) {
   const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState('');
   const [message, setMessage] = useState('');
+  const [confirmedSession, setConfirmedSession] = useState<any | null>(null);
 
   const load = async () => {
     try {
@@ -41,15 +44,16 @@ export default function ClassesScreen({ navigation }: any) {
 
   useEffect(() => { load(); }, [filter]);
 
-  const handleEnroll = async (sessionId: number) => {
+  const handleEnroll = async (session: any) => {
     try {
-      await enrollClass(sessionId);
-      setMessage('Enrolled successfully!');
+      await enrollClass(session.session_id);
+      await scheduleClassNotification(session);
+      setConfirmedSession(session);
       load();
     } catch (e: any) {
       setMessage(e.response?.data?.message || 'Could not enroll.');
+      setTimeout(() => setMessage(''), 3000);
     }
-    setTimeout(() => setMessage(''), 3000);
   };
 
   const handleCancel = async (sessionId: number) => {
@@ -62,6 +66,13 @@ export default function ClassesScreen({ navigation }: any) {
   };
 
   return (
+    <>
+    {confirmedSession && (
+      <BookingConfirmation
+        session={confirmedSession}
+        onDismiss={() => setConfirmedSession(null)}
+      />
+    )}
     <View style={styles.container}>
       {/* Filter chips */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow} contentContainerStyle={styles.filterContent}>
@@ -126,7 +137,7 @@ export default function ClassesScreen({ navigation }: any) {
                       <Text style={styles.cancelBtnText}>Cancel Enrollment</Text>
                     </TouchableOpacity>
                   ) : spots > 0 ? (
-                    <TouchableOpacity style={styles.enrollBtn} onPress={() => handleEnroll(s.session_id)}>
+                    <TouchableOpacity style={styles.enrollBtn} onPress={() => handleEnroll(s)}>
                       <Text style={styles.enrollBtnText}>Enroll</Text>
                     </TouchableOpacity>
                   ) : (
@@ -141,6 +152,7 @@ export default function ClassesScreen({ navigation }: any) {
         </ScrollView>
       )}
     </View>
+    </>
   );
 }
 
